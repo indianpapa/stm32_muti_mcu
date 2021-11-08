@@ -30,16 +30,6 @@ extern const char _F16x16_Idx[];
 extern const char _F16x16[];
 extern const char _F8x16[];
 
-static void _delay_ms(uint_16 ms) {
-  uint_16 a;
-  while (ms) {
-      a = 1335;
-      while (a--);
-      ms--;
-  }
-  return;
-}
-
 static void _oled_gpio_WrCmd(_oled_gpio_device_internal_t* device, uint_8 cmd) {
 	uint_8 i = 8;
 
@@ -102,7 +92,7 @@ static void _oled_gpio_Set_Pos(_oled_gpio_device_internal_t* device, uint_8 x, u
 
 _oled_gpio_device_internal_t* current_device;
 
-static void oled_gpio_device_init_delay() {
+static void oled_gpio_device_init_delay(uint_16 type, void* pv) {
 	current_device->rst_control(GPIO_PIN_SET);
 	_oled_gpio_WrCmd(current_device, 0xae); //--turn off oled panel
 	_oled_gpio_WrCmd(current_device, 0x00); //---set low column address
@@ -144,7 +134,7 @@ bool_t oled_gpio_device_init(_oled_gpio_device_internal_t* device) {
 
 	current_device = device;
 
-	callback_scheduler_postdely_ms(oled_gpio_device_init_delay, 50);
+	callback_scheduler_postdely_ms(oled_gpio_device_init_delay, device, 777, 50);
 
 	return true;
 }

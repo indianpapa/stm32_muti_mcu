@@ -8,13 +8,13 @@
 #include "hal.h"
 #include "common/systick.h"
 
-static callback_void_void USER_CALLBACK = null;
+static callback_void_void S_USER_CALLBACK = null;
 
-static uint_32 N_CYCLES_US, MAX_DELAY_US, DELAY_LEFT_US;
+static uint_32 N_CYCLES_US, MAX_DELAY_US, S_DELAY_OVERFLOW_US;
 
 /** Initialize systick, return max delay in us.*/
 void systick_initialize(callback_void_void callback) {
-	USER_CALLBACK = callback;
+	S_USER_CALLBACK = callback;
 
 	N_CYCLES_US = HAL_RCC_GetHCLKFreq() / 1000000;
 
@@ -26,7 +26,7 @@ void systick_initialize(callback_void_void callback) {
 
     MAX_DELAY_US = SysTick_LOAD_RELOAD_Msk / N_CYCLES_US;
 
-    DELAY_LEFT_US = 0UL;
+    S_DELAY_OVERFLOW_US = 0UL;
 
     SysTick->VAL = 0UL;
     SysTick->LOAD = 0UL;
@@ -37,39 +37,38 @@ void systick_postdelay(uint_32 us) {
 	SysTick->VAL = 0UL;
 
 	if (us > MAX_DELAY_US) {
-		DELAY_LEFT_US = us - MAX_DELAY_US;
+		S_DELAY_OVERFLOW_US = us - MAX_DELAY_US;
 		SysTick->LOAD = (uint32_t)(SysTick_LOAD_RELOAD_Msk - 1UL);
 	} else {
-		DELAY_LEFT_US = 0UL;
+		S_DELAY_OVERFLOW_US = 0UL;
 	    SysTick->LOAD = (uint32_t)(N_CYCLES_US * us - 1UL);
 	}
 
-	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-			SysTick_CTRL_TICKINT_Msk |
-			SysTick_CTRL_ENABLE_Msk;
+	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
 }
 
 void systick_clear() {
-	DELAY_LEFT_US = 0UL;
+	S_DELAY_OVERFLOW_US = 0UL;
 	SysTick->VAL = 0UL;
     SysTick->CTRL &= ~ SysTick_CTRL_ENABLE_Msk;
 }
 
 uint_32 systick_get_timeleft() {
-	return DELAY_LEFT_US + SysTick->VAL / N_CYCLES_US;
+	return S_DELAY_OVERFLOW_US + SysTick->VAL / N_CYCLES_US;
 }
 
 void HAL_SYSTICK_Callback(void) {
-	if (DELAY_LEFT_US > MAX_DELAY_US) {
+	if (S_DELAY_OVERFLOW_US > MAX_DELAY_US) {
 		// Systick continue.
-		DELAY_LEFT_US = DELAY_LEFT_US - MAX_DELAY_US;
-	} else if (DELAY_LEFT_US > 0UL) {
-		DELAY_LEFT_US = 0UL;
-		SysTick->VAL   = 0UL;
-		SysTick->LOAD = (uint32_t)(N_CYCLES_US * DELAY_LEFT_US - 1UL);
+		S_DELAY_OVERFLOW_US -= MAX_DELAY_US;
+	} else if (S_DELAY_OVERFLOW_US > 0UL) {
+		// Count down overflow time
+		S_DELAY_OVERFLOW_US = 0UL;
+		SysTick->VAL = 0UL;
+		SysTick->LOAD = (uint32_t)(N_CYCLES_US * S_DELAY_OVERFLOW_US - 1UL);
 	} else {
-	    SysTick->VAL   = 0UL;
+	    SysTick->VAL = 0UL;
 	    SysTick->CTRL &= ~ SysTick_CTRL_ENABLE_Msk;
-	    USER_CALLBACK();
+	    S_USER_CALLBACK();
 	}
 }

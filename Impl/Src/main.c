@@ -47,10 +47,22 @@
 int counter = 0;
 char message[12];
 
-void loop() {
+int t_sec = 0, t_min = 0;
+
+void loop(uint_16 type, void* pv) {
     GPIO_OUT.set_state(GPIO_OUT.state == GPIO_PIN_SET ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
-	callback_scheduler_postdely_s(loop, DELAY_TIME_S);
+	t_sec++;
+	if (t_sec == 60) {
+		t_min++;
+		t_sec = 0;
+	}
+
+	sprintf(message, "%d:%d", t_min, t_sec);
+
+	OLED_0_95_INCH.appendLine(message);
+
+	callback_scheduler_postdely_s(loop, null, 0, DELAY_TIME_S);
 }
 
 void BTN_A_DOWN_CALLBACK(uint_8 id) {
@@ -85,7 +97,7 @@ int main(void) {
     BUTTON_B.set_action_callback(BUTTON_CALLBACK_DOWN, BTN_B_DOWN_CALLBACK);
     BUTTON_B.set_action_callback(BUTTON_CALLBACK_UP, BTN_B_DOWN_CALLBACK);
 
-    callback_scheduler_postdely_s(loop, 1);
+    callback_scheduler_postdely_s(loop, null, 0, 1);
 
     OLED_0_95_INCH.appendLine("stared");
 

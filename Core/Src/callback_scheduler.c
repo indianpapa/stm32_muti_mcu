@@ -17,9 +17,11 @@ static callback_void_void LOCKED_SYSTICK_CALLBACK;
 static bool_t POST_DELAY_LOCKED;
 
 typedef struct callback_record {
-	int_16 next;
+	int_16 next:16;
+	uint_16 type:16;
+	void* pv;
 	uint_32 interval;
-	callback_void_void callback;
+	callback_void_type_pointer callback;
 } callback_record_t;
 
 static int_16 _workheadpos = -1;
@@ -81,7 +83,7 @@ void scheduler_systick_callback() {
 	_recordspool[element].next = _freeheadpos;
 	_freeheadpos = element;
 
-	_recordspool[element].callback();
+	_recordspool[element].callback(_recordspool[element].type, _recordspool[element].pv);
 }
 
 bool_t initialze_scheduler() {
@@ -92,15 +94,15 @@ bool_t initialze_scheduler() {
 	return true;
 }
 
-bool_t callback_scheduler_postdely_s(callback_void_void callback, uint_32 delay) {
-	return callback_scheduler_postdely_us(callback, delay * 1000000);
+bool_t callback_scheduler_postdely_s(callback_void_type_pointer callback, void* pv, uint_16 type, uint_32 delay) {
+	return callback_scheduler_postdely_us(callback, pv, type, delay * 1000000);
 }
 
-bool_t callback_scheduler_postdely_ms(callback_void_void callback, uint_32 delay) {
-	return callback_scheduler_postdely_us(callback, delay * 1000);
+bool_t callback_scheduler_postdely_ms(callback_void_type_pointer callback, void* pv, uint_16 type, uint_32 delay) {
+	return callback_scheduler_postdely_us(callback, pv, type, delay * 1000);
 }
 
-bool_t callback_scheduler_postdely_us(callback_void_void callback, uint_32 delay) {
+bool_t callback_scheduler_postdely_us(callback_void_type_pointer callback, void* pv, uint_16 type, uint_32 delay) {
 	POST_DELAY_LOCKED = true;
 
 	int_16 element = _freeheadpos;
@@ -112,6 +114,8 @@ bool_t callback_scheduler_postdely_us(callback_void_void callback, uint_32 delay
 	_freeheadpos = _recordspool[element].next;
 
 	_recordspool[element].callback = callback;
+	_recordspool[element].type = type;
+	_recordspool[element].pv = pv;
 
 	uint_32 timeleft = systick_get_timeleft();
 
@@ -141,16 +145,4 @@ DO_NOTHING:
 		LOCKED_SYSTICK_CALLBACK = null;
 	}
 	return true;
-}
-
-void delay_s(uint_32 s) {
-	delay_ms(s * 1000);
-}
-
-void delay_ms(uint_32 ms) {
-	uint_16 a;
-    while (ms--) {
-	  a = 1335;
-	  while (a--);
-    }
 }

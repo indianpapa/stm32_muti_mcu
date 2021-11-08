@@ -40,4 +40,6 @@ typedef unsigned int uint_32;
 
 TYPEDEF_FUNC_POINTER(callback_void_void, void, void);
 
+TYPEDEF_FUNC_POINTER(callback_void_type_pointer, void, uint_16, void*);
+
 #endif /* CORE_BASE_TYPES_H_ */

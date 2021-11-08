@@ -14,14 +14,10 @@
 
 bool_t initialze_scheduler();
 
-bool_t callback_scheduler_postdely_s(callback_void_void /*callback*/, uint_32 /*delay time in s*/);
+bool_t callback_scheduler_postdely_s(callback_void_type_pointer /*callback*/, void* pv, uint_16 type, uint_32 /*delay time in s*/);
 
-bool_t callback_scheduler_postdely_ms(callback_void_void /*callback*/, uint_32 /*delay time in ms*/);
+bool_t callback_scheduler_postdely_ms(callback_void_type_pointer /*callback*/, void* pv, uint_16 type, uint_32 /*delay time in ms*/);
 
-bool_t callback_scheduler_postdely_us(callback_void_void /*callback*/, uint_32 /*delay time in us*/);
-
-void delay_s(uint_32);
-
-void delay_ms(uint_32);
+bool_t callback_scheduler_postdely_us(callback_void_type_pointer /*callback*/, void* pv, uint_16 type, uint_32 /*delay time in us*/);
 
 #endif /* DAZE_INC_CALLBACK_SCHEDULER_H_ */
