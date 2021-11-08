@@ -1,0 +1,7 @@
+.DS_Store
+Drivers/.DS_Store
+Drivers/CMSIS/.DS_Store
+Drivers/CMSIS/.DS_Store
+Drivers/STM32F4xx_HAL_Driver/.DS_Store
+build_*
+.idea/
