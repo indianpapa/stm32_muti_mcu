@@ -58,7 +58,7 @@ void loop(uint_16 type, void* pv) {
 		t_sec = 0;
 	}
 
-	sprintf(message, "%d:%d", t_min, t_sec);
+	sprintf(message, "%d:%2d     ", t_min, t_sec);
 
 	OLED_0_95_INCH.appendLine(message);
 

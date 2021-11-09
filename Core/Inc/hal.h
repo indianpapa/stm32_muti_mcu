@@ -15,4 +15,7 @@
 #error "MCU class not supported"
 #endif
 
+// config outer RCC on gpio
+void GPIO_RCC_config();
+
 #endif //CMAKE_STM32_HAL_H
