@@ -5,8 +5,8 @@
  *      Author: gene
  */
 
-#ifndef DAZE_PERIPHERALS_OUTPUT_GPIO_H_
-#define DAZE_PERIPHERALS_OUTPUT_GPIO_H_
+#ifndef CORE_PERIPHERALS_OUTPUT_GPIO_H_
+#define CORE_PERIPHERALS_OUTPUT_GPIO_H_
 
 #include "base/types.h"
 #include "hal.h"
@@ -31,4 +31,4 @@ gpio_out_t name = {											\
 	GPIO_PIN_RESET											\
 };
 
-#endif /* DAZE_PERIPHERALS_OUTPUT_GPIO_H_ */
+#endif /* CORE_PERIPHERALS_OUTPUT_GPIO_H_ */

@@ -12,6 +12,7 @@
 #include "peripherals/input_gpio.h"
 #include "peripherals/input_button.h"
 #include "peripherals/output_gpio.h"
+#include "peripherals/output_pwm.h"
 
 // Define OLED_0_95_INCH
 extern oled_gpio_device_t OLED_0_95_INCH;
@@ -23,5 +24,7 @@ extern exti_button_device_t BUTTON_A;
 extern exti_button_device_t BUTTON_B;
 
 extern gpio_out_t GPIO_OUT;
+
+extern pwm_out_t PWM_OUT_A;
 
 #endif /* INC_DEVICES_DEVICE_H_ */

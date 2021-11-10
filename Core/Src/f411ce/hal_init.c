@@ -14,6 +14,8 @@ void HAL_MspInit(void) {
 
     __HAL_RCC_SYSCFG_CLK_ENABLE();
     __HAL_RCC_PWR_CLK_ENABLE();
+
+	G_Rcc_Frequency = 100;
 }
 
 void GPIO_RCC_config() {

@@ -18,8 +18,6 @@ void HAL_MspInit(void) {
 
 	/**DISABLE: JTAG-DP Disabled and SW-DP Disabled*/
 	__HAL_AFIO_REMAP_SWJ_DISABLE();	
-
-
 }
 
 void GPIO_RCC_config() {

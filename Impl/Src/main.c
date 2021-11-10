@@ -66,13 +66,13 @@ void loop(uint_16 type, void* pv) {
 }
 
 void BTN_A_DOWN_CALLBACK(uint_8 id) {
-    sprintf(message, "%d: %s", counter++, GPIO_INPUT.get_state() == GPIO_PIN_SET ? "on" : "off");
+    sprintf(message, "%d", counter++);
 
     OLED_0_95_INCH.appendLine(message);
 }
 
 void BTN_B_DOWN_CALLBACK(uint_8 id) {
-    sprintf(message, "%d: %s", counter++, GPIO_INPUT.get_state() == GPIO_PIN_SET ? "on" : "off");
+    sprintf(message, "%d", counter++);
 
     OLED_0_95_INCH.appendLine(message);
 }
@@ -80,9 +80,10 @@ void BTN_B_DOWN_CALLBACK(uint_8 id) {
 int main(void) {
     core_init();
 
+	PWM_OUT_A.init_device();
+
     OLED_0_95_INCH.init_device();
 
-    GPIO_INPUT.init_device();
 
     GPIO_OUT.init_device();
     GPIO_OUT.set_state(GPIO_PIN_SET);
